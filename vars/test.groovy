@@ -28,7 +28,7 @@ def call(){
                 expression{ env.BRANCH_NAME != 'main'}
             }
             steps{
-                sh 'echo docker push images'
+                sh 'echo docker push images test'
             }
         }
         stage('Deploy to dev env'){
