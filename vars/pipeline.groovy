@@ -5,7 +5,8 @@ def call(){
     def app    = env.appType
  
     if (branch.startsWith("feature/")) {
-        stage('Checkout') {
+       if(app == "nodejs"){
+             stage('Checkout') {
             checkout scm
             echo "Branch: ${branch}"
             echo "Triggered by: ${user}"
@@ -13,13 +14,24 @@ def call(){
             echo "trigeged okay 2"
         }
 
-        stage('Build & Test') {
-            echo "Building feature branch..."
+        stage('Unit test case') {
+            echo "Running Unit test case"
+            echo "npm test case"
+        }
+        stage('Integration Test') {
+            echo "Running Integration test case"
+            echo "npm integration test"
+        }
+        stage('Regression Test') {
+            echo "Running regression test case."
+            echo "npm regression test"
         }
 
-        stage('Deploy to Test') {
+        stage('Deploy to Test Environment') {
             echo "Deploying to test environment..."
+            echo "fire base deploy to test env"
         }
+       }
 
     } else if (branch == "main" || env.TAG_NAME) {
         if(app == "nodejs"){
@@ -40,6 +52,7 @@ def call(){
 
         stage('Deploy to Production') {
             echo "Deploying to production..."
+            echo "firebase deploy production"
         }
         
         }
