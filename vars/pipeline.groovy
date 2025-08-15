@@ -1,67 +1,59 @@
-def call(){
+def call() {
     node {
-    def branch = env.BRANCH_NAME ? : " "
-    def user   = currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause')[0]?.getUserId()
-    def app    = env.appType
- 
-    if (branch.startsWith("feature/")) {
-       if(app == "nodejs"){
-             stage('Checkout') {
-            checkout scm
-            echo "Branch: ${branch}"
-            echo "Triggered by: ${user}"
-            echo "trigeged okay"
-            echo "trigeged okay 2"
-        }
+        // Null-safe branch detection
+        def branch = env.BRANCH_NAME ?: ""
+        def app    = env.appType
 
-        stage('Unit test case') {
-            echo "Running Unit test case"
-            echo "npm test case"
-        }
-        stage('Integration Test') {
-            echo "Running Integration test case"
-            echo "npm integration test"
-        }
-        stage('Regression Test') {
-            echo "Running regression test case."
-            echo "npm regression test"
-        }
+        // Safe trigger user detection
+        def userCause = currentBuild?.rawBuild?.getCauses()
+                        ?.find { cause -> cause.hasProperty('userId') }
+        def user = userCause?.userId ?: "SYSTEM"
 
-        stage('Deploy to Test Environment') {
-            echo "Deploying to test environment..."
-            echo "fire base deploy to test env"
-        }
-       }
+        if (branch.startsWith("feature/")) {
+            if (app == "nodejs") {
+                stage('Checkout') {
+                    checkout scm
+                    echo "Branch: ${branch}"
+                    echo "Triggered by: ${user}"
+                }
 
-    } else if (branch == "main" || env.TAG_NAME) {
-        if(app == "nodejs"){
-            stage('Build') {
-            
-            echo "Building production code..."
-            echo "test main branch run"
-            echo "test main branch run 2"
-            echo "testing pipeline jenkins in gcp"
-            echo "testing new trigger pipeline jenkins in gcp to do"
-        }
+                stage('Unit test case') {
+                    echo "Running Unit test case"
+                    echo "npm test"
+                }
+                stage('Integration Test') {
+                    echo "Running Integration test case"
+                    echo "npm run integration-test"
+                }
+                stage('Regression Test') {
+                    echo "Running regression test case"
+                    echo "npm run regression-test"
+                }
+                stage('Deploy to Test Environment') {
+                    echo "Deploying to test environment..."
+                    echo "firebase deploy --project test"
+                }
+            }
 
-        stage('Approval') {
-            // Only admindev or admininfra can approve
-            input message: "Approve deployment to PROD?", 
-                  submitter: 'admindev,admininfra'
-        }
+        } else if (branch == "main" || env.TAG_NAME) {
+            if (app == "nodejs") {
+                stage('Build') {
+                    echo "Building production code..."
+                }
 
-        stage('Deploy to Production') {
-            echo "Deploying to production..."
-            echo "firebase deploy production"
+                stage('Approval') {
+                    input message: "Approve deployment to PROD?",
+                          submitter: 'admindev,admininfra'
+                }
+
+                stage('Deploy to Production') {
+                    echo "Deploying to production..."
+                    echo "firebase deploy --project production"
+                }
+            }
+
+        } else {
+            echo "No matching deployment rule for this branch."
         }
-        
-        }
-    } else {
-        echo "No matching deployment rule for this branch."
     }
-}
-
-
-
-
 }
