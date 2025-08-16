@@ -1,6 +1,5 @@
-def call(){
+def call() {
     node {
-        
         pipeline {
             agent any
         
@@ -17,17 +16,22 @@ def call(){
                 always {
                     emailext(
                         subject: "Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}",
-                        body: """Hello,
+                        body: '''Hello,
 
-                        Here are the logs:
-                        
-                        ${BUILD_LOG, maxLines=100}
-                        """,
-                            to: 'manupanand@outlook.com'
-                        )
+Here are the logs:
 
+${BUILD_LOG, maxLines=100}
+
+Build URL: ${BUILD_URL}
+Job Name: ${JOB_NAME}
+Build Number: ${BUILD_NUMBER}
+Build Status: ${BUILD_STATUS}
+''',
+                        to: 'manupanand@outlook.com',
+                        mimeType: 'text/plain'
+                    )
                 }
             }
         }
-        }
+    }
 }
