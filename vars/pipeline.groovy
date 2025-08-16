@@ -1,59 +1,50 @@
-def call() {
+def call(){
     node {
-        // Null-safe branch detection
-        def branch = env.BRANCH_NAME ?: ""
-        def app    = env.appType
+    def branch = env.BRANCH_NAME
+    def user = currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause')[0]?.getUserId()
 
-        // Safe trigger user detection
-        def userCause = currentBuild?.rawBuild?.getCauses()
-                        ?.find { cause -> cause.hasProperty('userId') }
-        def user = userCause?.userId ?: "SYSTEM"
-
-        if (branch.startsWith("feature/")) {
-            if (app == "nodejs") {
-                stage('Checkout') {
-                    checkout scm
-                    echo "Branch: ${branch}"
-                    echo "Triggered by: ${user}"
-                }
-
-                stage('Unit test case') {
-                    echo "Running Unit test case"
-                    echo "npm test"
-                }
-                stage('Integration Test') {
-                    echo "Running Integration test case"
-                    echo "npm run integration-test"
-                }
-                stage('Regression Test') {
-                    echo "Running regression test case"
-                    echo "npm run regression-test"
-                }
-                stage('Deploy to Test Environment') {
-                    echo "Deploying to test environment..."
-                    echo "firebase deploy --project test"
-                }
-            }
-
-        } else if (branch == "main" || env.TAG_NAME) {
-            if (app == "nodejs") {
-                stage('Build') {
-                    echo "Building production code..."
-                }
-
-                stage('Approval') {
-                    input message: "Approve deployment to PROD?",
-                          submitter: 'admindev,admininfra'
-                }
-
-                stage('Deploy to Production') {
-                    echo "Deploying to production..."
-                    echo "firebase deploy --project production"
-                }
-            }
-
-        } else {
-            echo "No matching deployment rule for this branch."
+ 
+    if (branch.startsWith("feature/")) {
+        stage('Checkout') {
+            checkout scm
+            echo "Branch: ${branch}"
+            echo "Triggered by: ${user}"
+            echo "trigeged okay"
+            echo "trigeged okay 2"
         }
+
+        stage('Build & Test') {
+            echo "Building feature branch..."
+        }
+
+        stage('Deploy to Test') {
+            echo "Deploying to test environment..."
+        }
+
+    } else if (branch == "main" || env.TAG_NAME) {
+        stage('Build') {
+            echo "Building production code..."
+            echo "test main branch run"
+            echo "test main branch run 2"
+            echo "testing pipeline jenkins in gcp"
+            echo "testing new trigger pipeline jenkins in gcp to do"
+        }
+
+        stage('Approval') {
+            // Only admindev or admininfra can approve
+            input message: "Approve deployment to PROD?", 
+                  submitter: 'admindev,admininfra'
+        }
+
+        stage('Deploy to Production') {
+            echo "Deploying to production..."
+        }
+    } else {
+        echo "No matching deployment rule for this branch."
     }
+}
+
+
+
+
 }
