@@ -17,9 +17,15 @@ def call(){
                 always {
                     emailext(
                         subject: "Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}",
-                        body: "Hello,\n\nHere are the logs:\n\n${BUILD_LOG, maxLines=100}",
-                        to: 'manupanand@outlook.com'
-                    )
+                        body: """Hello,
+
+                        Here are the logs:
+                        
+                        ${BUILD_LOG, maxLines=100}
+                        """,
+                            to: 'manupanand@outlook.com'
+                        )
+
                 }
             }
         }
