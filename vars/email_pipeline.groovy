@@ -14,9 +14,15 @@ def call() {
         
             post {
                 always {
-                    emailext(
-                        subject: "Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}",
-                        body: '''Hello,
+                    script {
+                        echo "Attempting to send email..."
+                        echo "Build Number: ${env.BUILD_NUMBER}"
+                        echo "Build Status: ${currentBuild.currentResult}"
+                        
+                        try {
+                            emailext(
+                                subject: "Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}",
+                                body: '''Hello,
 
 Here are the logs:
 
@@ -27,9 +33,17 @@ Job Name: ${JOB_NAME}
 Build Number: ${BUILD_NUMBER}
 Build Status: ${BUILD_STATUS}
 ''',
-                        to: 'manupanand@outlook.com',
-                        mimeType: 'text/plain'
-                    )
+                                to: 'manupanand@outlook.com',
+                                mimeType: 'text/plain',
+                                attachLog: true,
+                                compressLog: true
+                            )
+                            echo "Email sent successfully!"
+                        } catch (Exception e) {
+                            echo "Failed to send email: ${e.message}"
+                            echo "Stack trace: ${e.printStackTrace()}"
+                        }
+                    }
                 }
             }
         }
