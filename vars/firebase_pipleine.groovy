@@ -42,6 +42,9 @@ def call(){
                 // Add actual deployment commands here
                 // sh 'firebase deploy'
             }
+            stage('Email Notification'){
+                echo "This is build log email"
+            }
         } else {
             echo "Skipping pipeline - appType is not nodejs (current: ${app})"
         }
