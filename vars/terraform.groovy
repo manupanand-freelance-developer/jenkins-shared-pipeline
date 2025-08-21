@@ -14,6 +14,9 @@ def call(){
                 }
         }
         stage('Terraform init'){
+            sh 'cd  terraform_code'
+            echo "terraform initializing"
+            terraform init -backend-config=env-dev/state.tfvars
         }
         stage('Terraform Plan'){
         }
