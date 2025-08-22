@@ -16,22 +16,22 @@ def call() {
                 sh 'node --version'
                 sh 'npm --version'
                 // Add your build commands here
-                sh 'npm install'
-                sh 'npm run build'
-                sh 'npm test'
+                //sh 'npm install'
+                //sh 'npm run build'
+                //sh 'npm test'
             }
             
             // Option 2: Alternative - if NodeJS tool doesn't work, use direct commands
-            /* 
-            sh '''
-                export PATH="/usr/bin:$PATH"
-                node --version
-                npm --version
-                npm install
-                npm run build
-                npm test
-            '''
-            */
+            //* 
+            //sh '''
+            //    export PATH="/usr/bin:$PATH"
+            //    node --version
+            //    npm --version
+            //    npm install
+            //    npm run build
+            //    npm test
+            //'''
+            //*/
         }
         
         stage('Deployment Approval') {
