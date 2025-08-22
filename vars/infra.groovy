@@ -1,5 +1,6 @@
 def call() {
     node {
+        try {
         def branch = env.BRANCH_NAME
         
         stage('Checkout') {
@@ -10,6 +11,7 @@ def call() {
         stage('Build & Firebase Test') {
             echo "Building feature branch..."
             // Use NodeJS plugin installation
+            // Option 1: Using configured NodeJS tool
             nodejs(nodeJSInstallationName: 'NodeJS') {
                 sh 'node --version'
                 sh 'npm --version'
@@ -18,6 +20,18 @@ def call() {
                 sh 'npm run build'
                 sh 'npm test'
             }
+            
+            // Option 2: Alternative - if NodeJS tool doesn't work, use direct commands
+            /* 
+            sh '''
+                export PATH="/usr/bin:$PATH"
+                node --version
+                npm --version
+                npm install
+                npm run build
+                npm test
+            '''
+            */
         }
         
         stage('Deployment Approval') {
@@ -55,14 +69,19 @@ def call() {
             echo "Deploying to production..."
             // Add your Firebase deployment commands here
             //nodejs(nodeJSInstallationName: 'NodeJS') {
-            //   sh '''
-            //      # Install Firebase CLI if not already installed
-            //      npm install -g firebase-tools
+            //    sh '''
+            //        # Install Firebase CLI if not already installed
+            //        npm install -g firebase-tools
             //        
             //        # Deploy to Firebase (using service account or login)
             //        firebase deploy --project your-project-id
             //    '''
             //}
+        }
+        } finally {
+            // This always runs, even if build fails
+            echo "Running final cleanup..."
+            cleanWs()
         }
     }
 }
