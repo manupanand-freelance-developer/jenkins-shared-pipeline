@@ -54,7 +54,7 @@ def call() {
         stage('Deploying to Firebase') {
             echo "Deploying to production..."
             // Add your Firebase deployment commands here
-            //nodejs(nodeJSInstallationName: 'NodeJS_16') {
+            //nodejs(nodeJSInstallationName: 'NodeJS') {
             //   sh '''
             //      # Install Firebase CLI if not already installed
             //      npm install -g firebase-tools
