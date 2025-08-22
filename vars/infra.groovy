@@ -38,7 +38,7 @@ def call() {
             echo "Waiting for admindev approval..."
             script {
                 try {
-                    timeout(time: 10, unit: 'MINUTES') {
+                    timeout(time: 60, unit: 'MINUTES') {
                         input message: 'Deploy to Firebase?', 
                               ok: 'Deploy',
                               submitter: 'admindev',
