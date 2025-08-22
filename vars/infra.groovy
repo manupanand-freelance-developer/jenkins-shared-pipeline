@@ -10,7 +10,7 @@ def call() {
         stage('Build & Firebase Test') {
             echo "Building feature branch..."
             // Use NodeJS plugin installation
-            nodejs(nodeJSInstallationName: 'NodeJS_16') {
+            nodejs(nodeJSInstallationName: 'NodeJS') {
                 sh 'node --version'
                 sh 'npm --version'
                 // Add your build commands here
