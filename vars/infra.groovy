@@ -91,7 +91,7 @@ def call() {
             dir('firebase/hello-world-app') {
                 sh '''
                     # Install Firebase CLI if not already installed
-                    //npm install -g firebase-tools
+                    #npm install -g firebase-tools
                         
                     # Deploy to Firebase (using service account or login) 
                     firebase deploy --project zeta-flare-449207-r0 --token "$FIREBASE"
