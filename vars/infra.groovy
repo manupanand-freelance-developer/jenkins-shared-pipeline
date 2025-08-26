@@ -7,13 +7,15 @@ def call() {
             checkout scm
             echo "Branch: ${branch}"
         }
-        stage('Install firebase tools'){
-            echo "Installing firebase tools"
+        stage('Setup and Install Dependencies'){
+            echo "Installing tools and dependencies"
             nodejs(nodeJSInstallationName: 'NodeJS') {
                 sh 'npm install -g firebase-tools'
-                
+                sh 'npm install'  // Install local dependencies including Angular CLI
             }
         }
+
+
         stage(' Firebase Test') {
             echo "Building feature branch..."
             // Use NodeJS plugin installation
@@ -41,9 +43,8 @@ def call() {
         }
         stage('Firebase build production'){
             nodejs(nodeJSInstallationName: 'NodeJS') {
-                sh 'ng build --prod'
+                sh 'npx ng build --production'  // Use npx for local CLI
             }
-        
         }
         
         stage('Deployment Approval') {
