@@ -89,6 +89,7 @@ def call() {
             // Add your Firebase deployment commands here
             nodejs(nodeJSInstallationName: 'NodeJS') {
             dir('firebase/hello-world-app') {
+                withCredentials([string(credentialsId: 'FIREBASE', variable: 'FIREBASE')]) {
                 sh '''
                     # Install Firebase CLI if not already installed
                     #npm install -g firebase-tools
@@ -96,7 +97,7 @@ def call() {
                     # Deploy to Firebase (using service account or login) 
                     firebase deploy --project zeta-flare-449207-r0 --token "$FIREBASE"
                 '''
-            }
+            } }
             }
         }
         } finally {
