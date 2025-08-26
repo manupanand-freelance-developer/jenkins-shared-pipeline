@@ -48,7 +48,7 @@ def call() {
         stage('Firebase build production'){
             nodejs(nodeJSInstallationName: 'NodeJS') {
                 dir('firebase/hello-world-app') {
-                    sh 'npx ng build --production'  // Use npx for local CLI
+                    sh 'npx ng build --configuration=production'  // Use npx for local CLI
                 }
             }
         }
