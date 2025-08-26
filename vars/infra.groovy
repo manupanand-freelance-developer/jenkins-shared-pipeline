@@ -13,8 +13,8 @@ def call() {
             // Use NodeJS plugin installation
             // Option 1: Using configured NodeJS tool
             nodejs(nodeJSInstallationName: 'NodeJS') {
-                sh 'node --version'
-                sh 'npm --version'
+                sh 'npm install -g firebase-tools'
+                //sh 'npm --version'
                 // Add your build commands here
                 //sh 'npm install'
                 //sh 'npm run build'
