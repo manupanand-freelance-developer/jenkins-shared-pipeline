@@ -10,9 +10,12 @@ def call() {
         stage('Setup and Install Dependencies'){
             echo "Installing tools and dependencies"
             nodejs(nodeJSInstallationName: 'NodeJS') {
-                sh 'cd ./firebase/hello-world-app'
+                dir('firebase/hello-world-app') {
                 sh 'npm install -g firebase-tools'
-                sh 'npm install'  // Install local dependencies including Angular CLI
+                sh 'npm install'  // This will now work in the correct directory
+                }
+                //sh 'npm install -g firebase-tools'
+                //sh 'npm install'  // Install local dependencies including Angular CLI
             }
         }
 
@@ -44,7 +47,9 @@ def call() {
         }
         stage('Firebase build production'){
             nodejs(nodeJSInstallationName: 'NodeJS') {
-                sh 'npx ng build --production'  // Use npx for local CLI
+                dir('firebase/hello-world-app') {
+                    sh 'npx ng build --production'  // Use npx for local CLI
+                }
             }
         }
         
@@ -83,13 +88,15 @@ def call() {
             echo "Deploying to production..."
             // Add your Firebase deployment commands here
             nodejs(nodeJSInstallationName: 'NodeJS') {
-             sh '''
-                # Install Firebase CLI if not already installed
-                   npm install -g firebase-tools
-                    
-                   # Deploy to Firebase (using service account or login) 
-                  firebase deploy --project zeta-flare-449207-r0 --token "$FIREBASE"
-               '''
+            dir('firebase/hello-world-app') {
+                sh '''
+                    # Install Firebase CLI if not already installed
+                    //npm install -g firebase-tools
+                        
+                    # Deploy to Firebase (using service account or login) 
+                    firebase deploy --project zeta-flare-449207-r0 --token "$FIREBASE"
+                '''
+            }
             }
         }
         } finally {
