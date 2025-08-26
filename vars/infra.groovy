@@ -7,13 +7,19 @@ def call() {
             checkout scm
             echo "Branch: ${branch}"
         }
-        
-        stage('Build & Firebase Test') {
+        stage('Install firebase tools'){
+            echo "Installing firebase tools"
+            nodejs(nodeJSInstallationName: 'NodeJS') {
+                sh 'npm install -g firebase-tools'
+                
+            }
+        }
+        stage(' Firebase Test') {
             echo "Building feature branch..."
             // Use NodeJS plugin installation
             // Option 1: Using configured NodeJS tool
-            nodejs(nodeJSInstallationName: 'NodeJS') {
-                sh 'npm install -g firebase-tools'
+           nodejs(nodeJSInstallationName: 'NodeJS') {
+                //sh 'npm install -g firebase-tools'
                 //sh 'npm --version'
                 // Add your build commands here
                 //sh 'npm install'
@@ -32,6 +38,12 @@ def call() {
             //    npm test
             //'''
             //*/
+        }
+        stage('Firebase build production'){
+            nodejs(nodeJSInstallationName: 'NodeJS') {
+                sh 'ng build --prod'
+            }
+        
         }
         
         stage('Deployment Approval') {
@@ -68,15 +80,15 @@ def call() {
         stage('Deploying to Firebase') {
             echo "Deploying to production..."
             // Add your Firebase deployment commands here
-            //nodejs(nodeJSInstallationName: 'NodeJS') {
-            //    sh '''
-            //        # Install Firebase CLI if not already installed
-            //        npm install -g firebase-tools
-            //        
-            //        # Deploy to Firebase (using service account or login)
-            //        firebase deploy --project your-project-id
-            //    '''
-            //}
+            nodejs(nodeJSInstallationName: 'NodeJS') {
+             sh '''
+                # Install Firebase CLI if not already installed
+                   npm install -g firebase-tools
+                    
+                   # Deploy to Firebase (using service account or login) 
+                  firebase deploy --project zeta-flare-449207-r0 --token "$FIREBASE"
+               '''
+            }
         }
         } finally {
             // This always runs, even if build fails
