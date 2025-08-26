@@ -10,6 +10,7 @@ def call() {
         stage('Setup and Install Dependencies'){
             echo "Installing tools and dependencies"
             nodejs(nodeJSInstallationName: 'NodeJS') {
+                sh 'cd ./firebase/hello-world-app'
                 sh 'npm install -g firebase-tools'
                 sh 'npm install'  // Install local dependencies including Angular CLI
             }
